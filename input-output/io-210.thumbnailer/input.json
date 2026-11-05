@@ -1,0 +1,12 @@
+{
+  "object": {
+    "key": "6_astronomy-desktop-wallpaper-evening-1624438.jpg",
+    "width": 200,
+    "height": 200
+  },
+  "bucket": {
+    "bucket": "sebs-benchmarks",
+    "input": "210.thumbnailer-0-input",
+    "output": "210.thumbnailer-0-output"
+  }
+}

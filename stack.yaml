@@ -1,0 +1,71 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  sebs-010-sleep:
+    lang: python3-http-debian
+    handler: ./sebs-010-sleep
+    image: matheusschreiber/sebs-010-sleep:latest
+    limits:
+      memory: 128Mi
+    environment:
+      read_timeout: 30s
+      write_timeout: 30s
+      exec_timeout: 30s
+
+  sebs-110-dynamic-html:
+    lang: python3-http-debian
+    handler: ./sebs-110-dynamic-html
+    image: matheusschreiber/sebs-110-dynamic-html:latest
+    limits:
+      memory: 128Mi
+    environment:
+      read_timeout: 30s
+      write_timeout: 30s
+      exec_timeout: 30s
+  
+  sebs-120-uploader:
+    lang: python3-http-debian
+    handler: ./sebs-120-uploader
+    image: matheusschreiber/sebs-120-uploader:latest
+    limits:
+      memory: 128Mi
+    environment:
+      read_timeout: 30s
+      write_timeout: 30s
+      exec_timeout: 30s
+      MINIO_STORAGE_CONNECTION_URL: "10.31.112.98:9011"
+      MINIO_STORAGE_ACCESS_KEY: "hyxUd9ebrGzGu9ltjpN7XAlvx0WVT3AeD6kyC2Q1dxk"
+      MINIO_STORAGE_SECRET_KEY: "7b7e0ee9a1c4a2866d95196ca2f2e97c936f7dca1e783e8ce6934d976f5a8d70"
+
+  sebs-130-crud-api:
+    lang: python3-http-debian
+    handler: ./sebs-130-crud-api
+    image: matheusschreiber/sebs-130-crud-api:latest
+    limits:
+      memory: 128Mi
+    environment:
+      read_timeout: 30s
+      write_timeout: 30s
+      exec_timeout: 30s
+      NOSQL_STORAGE_TYPE: "scylladb"
+      NOSQL_STORAGE_ENDPOINT: "10.31.112.98:9012"
+      NOSQL_STORAGE_TABLE_shopping_cart: "shopping_cart"
+
+  sebs-210-thumbnailer:
+    lang: python3-http-debian
+    handler: ./sebs-210-thumbnailer
+    image: matheusschreiber/sebs-210-thumbnailer:latest
+    limits:
+      memory: 128Mi
+    environment:
+      read_timeout: 30s
+      write_timeout: 30s
+      exec_timeout: 30s
+      MINIO_STORAGE_CONNECTION_URL: "10.31.112.98:9011"
+      MINIO_STORAGE_ACCESS_KEY: "hyxUd9ebrGzGu9ltjpN7XAlvx0WVT3AeD6kyC2Q1dxk"
+      MINIO_STORAGE_SECRET_KEY: "7b7e0ee9a1c4a2866d95196ca2f2e97c936f7dca1e783e8ce6934d976f5a8d70"
+
+  
+

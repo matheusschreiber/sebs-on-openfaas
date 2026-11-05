@@ -1,0 +1,6 @@
+,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s
+,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max
+group,,,,,,,,,,,,,,,,,,,,,,,,
+120.uploader burst warm,45.0,2.3946,1.2312,0.4996,2.4249,4.362,4.5202,4.6178,45.0,0.8103,0.1931,0.44,0.7986,1.1731,1.3029,1.3359,45.0,1.5843,1.2393,0.0275,1.7407,3.534,3.6509,3.7
+120.uploader cold cold,50.0,0.9154,1.2079,0.3653,0.5412,3.6274,5.657,5.7573,50.0,0.8783,1.208,0.3329,0.5107,3.5919,5.6205,5.7268,50.0,0.0371,0.0065,0.0216,0.0356,0.0497,0.053,0.0539
+120.uploader warm warm,198.0,0.7355,0.9489,0.2787,0.5098,1.4838,5.8505,6.4207,198.0,0.7104,0.9491,0.2584,0.4824,1.447,5.8284,6.4002,198.0,0.0251,0.0064,0.0128,0.0241,0.0392,0.0473,0.0524
