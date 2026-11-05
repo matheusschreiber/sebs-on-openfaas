@@ -1,7 +1,7 @@
 version: 1.0
 provider:
   name: openfaas
-  gateway: http://127.0.0.1:8080
+  gateway: "http://127.0.0.1:8080"
 functions:
   sebs-010-sleep:
     lang: python3-http-debian
@@ -67,5 +67,17 @@ functions:
       MINIO_STORAGE_ACCESS_KEY: "hyxUd9ebrGzGu9ltjpN7XAlvx0WVT3AeD6kyC2Q1dxk"
       MINIO_STORAGE_SECRET_KEY: "7b7e0ee9a1c4a2866d95196ca2f2e97c936f7dca1e783e8ce6934d976f5a8d70"
 
-  
+  sebs-220-video-processing:
+    lang: python3-http-debian
+    handler: ./sebs-220-video-processing
+    image: matheusschreiber/sebs-220-video-processing:latest
+    limits:
+      memory: 1024Mi
+    environment:
+      read_timeout: 60s
+      write_timeout: 60s
+      exec_timeout: 60s
+      MINIO_STORAGE_CONNECTION_URL: "10.31.112.98:9011"
+      MINIO_STORAGE_ACCESS_KEY: "hyxUd9ebrGzGu9ltjpN7XAlvx0WVT3AeD6kyC2Q1dxk"
+      MINIO_STORAGE_SECRET_KEY: "7b7e0ee9a1c4a2866d95196ca2f2e97c936f7dca1e783e8ce6934d976f5a8d70"
 

@@ -1,0 +1,6 @@
+,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s
+,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max
+group,,,,,,,,,,,,,,,,,,,,,,,,
+220.video-processing burst warm,92.0,6.1377,6.9343,1.3357,4.2942,17.5831,34.5479,35.0769,92.0,3.3262,5.4439,1.0561,2.1107,12.7369,30.7767,31.1468,92.0,2.8115,4.2012,0.0375,1.9346,6.1377,17.5575,33.7294
+220.video-processing cold cold,50.0,1.0681,1.2678,0.6859,0.7943,1.1374,7.0966,8.3272,50.0,1.031,1.2689,0.6584,0.7581,1.1113,7.0665,8.2965,50.0,0.0372,0.0467,0.0158,0.0303,0.0408,0.2038,0.3587
+220.video-processing warm warm,200.0,0.7772,0.0774,0.5727,0.7808,0.9005,0.9715,1.0007,200.0,0.755,0.0749,0.5582,0.7585,0.8698,0.9467,0.9645,200.0,0.0222,0.0131,0.0115,0.0207,0.0286,0.0429,0.1938

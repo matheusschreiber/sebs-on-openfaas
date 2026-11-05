@@ -183,6 +183,7 @@ trap 'rm -f "$VALIDATION_RESULTS"' EXIT
 
 if validation_output=$(python3 run.py "${B[@]}" --mode warm -n 3 \
     --input "$OUTPUT_DIR/input.json" \
+    --data-dir "$SEBS/benchmarks-data/$BENCHMARK_DIR" \
     --input-module "$SEBS/benchmarks/$BENCHMARK_DIR/input.py" \
     --out "$VALIDATION_RESULTS" 2>&1); then
     printf '%s\n' "$validation_output"
