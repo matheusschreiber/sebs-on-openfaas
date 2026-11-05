@@ -1,17 +1,15 @@
 # Running SeBS benchmarks on OpenFaaS
 
 This repository contains a small harness for running Python benchmarks from
-[SeBS (Serverless Benchmark Suite)](./serverless-benchmarks/README.md) on an
+[SeBS (Serverless Benchmark Suite)](https://sebs.readthedocs.io/en/latest/) on an
 OpenFaaS deployment (faasd), then recording and plotting the results.
 
-The SeBS repository is used here as a **source of benchmark code, dependencies,
+The SeBS repository (external) is used here as a **source of benchmark code, dependencies,
 input generators, and optional storage tooling**. The scripts in
-[`sebs-on-openfaas/`](./sebs-on-openfaas/) invoke the deployed function
+`sebs-on-openfaas` invoke the deployed function
 themselves; this is not SeBS's automatic deployment/invocation pipeline.
 
-For a longer, step-by-step walkthrough, see
-[`sebs-on-openfaas-guide.md`](./sebs-on-openfaas-guide.md). This README
-summarizes the workflow and explains what each stage and plot represents.
+This README summarizes the workflow and explains what each stage and plot represents.
 
 ## How the pieces fit together
 
@@ -43,8 +41,10 @@ they are not stored in object storage.
 
 ## Prerequisites
 
-- A running OpenFaaS gateway/faasd deployment reachable from the machine running
-  `faas-cli` and `run.py`.
+- An OpenFaaS/faasd host reachable from the machine running `faas-cli` and
+  `run.py`. Use a private cloud provider, or, if one is unavailable, install
+  VirtualBox and start a VM with OpenFaaS/faasd configured. Ensure its gateway
+  and SSH access are reachable using the settings in `.env`.
 - `faas-cli`, Docker, and access to a container registry for building/pushing
   function images. Authenticate `faas-cli` with the gateway and Docker with the
   image registry before deployment.
@@ -82,7 +82,7 @@ do not need object storage. A benchmark such as `210.thumbnailer` does.
 From the SeBS checkout, with its environment active:
 
 ```bash
-cd /path/to/serverless-benchmarks
+cd /path/to/serverless-benchmarks # official SeBS repository (https://github.com/spcl/serverless-benchmarks/)
 source python-venv/bin/activate
 sebs storage start object configs/storage.json --output-json storage.json
 ```
@@ -106,7 +106,7 @@ Stop storage when finished, using the generated configuration:
 sebs storage stop object storage.json
 ```
 
-See SeBS's [storage documentation](./serverless-benchmarks/docs/storage.md) for
+See SeBS's [storage documentation](https://sebs.readthedocs.io/en/latest/storage.html) for
 object-storage/NoSQL options, addressing, and lifecycle details.
 
 `run_benchmark.sh` takes the function, benchmark identifier, benchmark path, and
@@ -142,9 +142,9 @@ resources, dependency versions, or initialization steps; consult their
 
 The OpenFaaS wrapper in the function folder should be adapted to the benchmark
 contract. The shared example is
-[`base_handler.py`](./sebs-on-openfaas/base_handler.py); the active benchmark
+[`base_handler.py`](base_handler.py); the active benchmark
 folders also contain their own handlers. The `python3-http` template's
-[`index.py`](./sebs-on-openfaas/template/python3-http/index.py) receives the
+[`index.py`](template/python3-http/index.py) receives the
 HTTP request, constructs an event (`event.body`, headers, method, etc.), and
 calls `handler.handle(event, context)`. In turn, the wrapper decodes the JSON
 body and calls the benchmark's `function.handler(inputs)`.
@@ -157,7 +157,7 @@ whose `input.py` defines `allocate_nosql`.
 
 ## 3. Configure and deploy with `stack.yaml`
 
-[`sebs-on-openfaas/stack.yaml`](./sebs-on-openfaas/stack.yaml) lists the
+[`stack.yaml`](stack.yaml) lists the
 functions, template language, source folder, image name, memory limit, and
 timeouts. Before deploying:
 
@@ -185,7 +185,6 @@ can pull them.
 Build, push, and deploy the functions in the stack:
 
 ```bash
-cd sebs-on-openfaas
 # Run once if this template is not already installed locally.
 faas-cli template store pull python3-http-debian
 faas-cli up -f stack.yaml
@@ -206,7 +205,7 @@ The response should include the benchmark result and wrapper metadata such as
 
 ## 4. Generate the benchmark input
 
-[`make_input.py`](./sebs-on-openfaas/make_input.py) imports the selected SeBS
+[`make_input.py`](make_input.py) imports the selected SeBS
 benchmark's `input.py` and calls its `generate_input(...)` function. It writes
 the returned configuration as `input.json`; it does not fetch a universal
 pre-prepared payload. Depending on the benchmark, the generator can also use
@@ -361,12 +360,3 @@ shows its mean split into the handler/function interval and estimated
 outside-handler remainder (or finer benchmark-provided timing components).
 Use the distribution plots to see variability/tails; use the breakdown to
 compare average time composition.
-
-## Repository map
-
-- [`sebs-on-openfaas/`](./sebs-on-openfaas/) — runner, input generator,
-  analyzer, OpenFaaS stack, and benchmark function folders.
-- [`serverless-benchmarks/`](./serverless-benchmarks/) — SeBS source, benchmark
-  input definitions, optional benchmark datasets, and storage CLI.
-- [`sebs-on-openfaas-guide.md`](./sebs-on-openfaas-guide.md) — expanded
-  walkthrough, benchmark-specific notes, and troubleshooting.
