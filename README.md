@@ -239,6 +239,19 @@ the event delivered to the handler.
 
 ## 5. Validate and run measurements
 
+Run the benchmark wrapper with its function name, SeBS identifier, benchmark
+directory, and storage mode. For `110.dynamic-html`, use `none` because this
+benchmark does not use storage, however the available strings are 
+`none, object, nosql`.
+
+```bash
+bash run_benchmark.sh \
+  --function sebs-110-dynamic-html \
+  --benchmark 110.dynamic-html \
+  --benchmark-dir 100.webapps/110.dynamic-html \
+  --storage none
+```
+
 Optionally validate a successful response with the benchmark's own
 `validate_output()` function:
 
