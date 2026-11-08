@@ -146,14 +146,7 @@ esac
 # RUNNING INPUT VALIDATION
 
 # manual check
-# python3 run.py \       
-#   --gateway http://127.0.0.1:8080 \
-#   --function sebs-120-uploader \
-#   --benchmark 120.uploader \
-#   --mode cold -n 1 \
-#   --input input-output/io-120.uploader/input.json \
-#   --out input-output/io-120.uploader/results.jsonl \
-#   --input-module ../serverless-benchmarks/benchmarks/100.webapps/120.uploader/input.py
+# python3 run.py --gateway http://127.0.0.1:8080 --function sebs-411-image-recognition --benchmark 411-image-recognition --mode cold -n 1 --input input-output/io-411-image-recognition/input.json --out input-output/io-411-image-recognition/results.jsonl --input-module ../serverless-benchmarks/benchmarks/400.inference/411.image-recognition/input.py
 
 
 INPUT_ARGS=(--size test)

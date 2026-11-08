@@ -31,6 +31,10 @@ fi
 
 cd "$SEBS"
 printf "Checking storage services..."
+
+PYTHON_VENV_DIR="$SEBS/python-venv/"
+source "$PYTHON_VENV_DIR/bin/activate"
+
 if [[ -f storage.json ]] \
     && read -r OBJECT_PORT NOSQL_PORT < <(python3 - storage.json <<'PY'
 import json, sys

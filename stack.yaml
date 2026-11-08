@@ -36,8 +36,8 @@ functions:
       write_timeout: 30s
       exec_timeout: 30s
       MINIO_STORAGE_CONNECTION_URL: "10.31.112.98:9011"
-      MINIO_STORAGE_ACCESS_KEY: "hyxUd9ebrGzGu9ltjpN7XAlvx0WVT3AeD6kyC2Q1dxk"
-      MINIO_STORAGE_SECRET_KEY: "7b7e0ee9a1c4a2866d95196ca2f2e97c936f7dca1e783e8ce6934d976f5a8d70"
+      MINIO_STORAGE_ACCESS_KEY: "2Oj9PRUQn00ToYEcInc3o6SID5OeyQblqFuH2nU-RH0"
+      MINIO_STORAGE_SECRET_KEY: "c8aa7441f8e98ae2bf007302cef63b0bbca823c83a60c9e2c8ed9eaf9844e7d5"
 
   sebs-130-crud-api:
     lang: python3-http-debian
@@ -64,8 +64,8 @@ functions:
       write_timeout: 30s
       exec_timeout: 30s
       MINIO_STORAGE_CONNECTION_URL: "10.31.112.98:9011"
-      MINIO_STORAGE_ACCESS_KEY: "hyxUd9ebrGzGu9ltjpN7XAlvx0WVT3AeD6kyC2Q1dxk"
-      MINIO_STORAGE_SECRET_KEY: "7b7e0ee9a1c4a2866d95196ca2f2e97c936f7dca1e783e8ce6934d976f5a8d70"
+      MINIO_STORAGE_ACCESS_KEY: "2Oj9PRUQn00ToYEcInc3o6SID5OeyQblqFuH2nU-RH0"
+      MINIO_STORAGE_SECRET_KEY: "c8aa7441f8e98ae2bf007302cef63b0bbca823c83a60c9e2c8ed9eaf9844e7d5"
 
   sebs-220-video-processing:
     lang: python3-http-debian
@@ -78,8 +78,8 @@ functions:
       write_timeout: 60s
       exec_timeout: 60s
       MINIO_STORAGE_CONNECTION_URL: "10.31.112.98:9011"
-      MINIO_STORAGE_ACCESS_KEY: "hyxUd9ebrGzGu9ltjpN7XAlvx0WVT3AeD6kyC2Q1dxk"
-      MINIO_STORAGE_SECRET_KEY: "7b7e0ee9a1c4a2866d95196ca2f2e97c936f7dca1e783e8ce6934d976f5a8d70"
+      MINIO_STORAGE_ACCESS_KEY: "2Oj9PRUQn00ToYEcInc3o6SID5OeyQblqFuH2nU-RH0"
+      MINIO_STORAGE_SECRET_KEY: "c8aa7441f8e98ae2bf007302cef63b0bbca823c83a60c9e2c8ed9eaf9844e7d5"
 
   sebs-311-compression:
     lang: python3-http-debian
@@ -92,6 +92,66 @@ functions:
       write_timeout: 30s
       exec_timeout: 30s
       MINIO_STORAGE_CONNECTION_URL: "10.31.112.98:9011"
-      MINIO_STORAGE_ACCESS_KEY: "hyxUd9ebrGzGu9ltjpN7XAlvx0WVT3AeD6kyC2Q1dxk"
-      MINIO_STORAGE_SECRET_KEY: "7b7e0ee9a1c4a2866d95196ca2f2e97c936f7dca1e783e8ce6934d976f5a8d70"
+      MINIO_STORAGE_ACCESS_KEY: "2Oj9PRUQn00ToYEcInc3o6SID5OeyQblqFuH2nU-RH0"
+      MINIO_STORAGE_SECRET_KEY: "c8aa7441f8e98ae2bf007302cef63b0bbca823c83a60c9e2c8ed9eaf9844e7d5"
+      
+  # sebs-411-image-recognition:
+  #   lang: python3-http-debian
+  #   handler: ./sebs-411-image-recognition
+  #   image: matheusschreiber/sebs-411-image-recognition:latest
+  #   limits:
+  #     memory: 1024Mi
+  #   environment:
+  #     read_timeout: 30s
+  #     write_timeout: 30s
+  #     exec_timeout: 30s
+  #     MINIO_STORAGE_CONNECTION_URL: "10.31.112.98:9011"
+  #     MINIO_STORAGE_ACCESS_KEY: "2Oj9PRUQn00ToYEcInc3o6SID5OeyQblqFuH2nU-RH0"
+  #     MINIO_STORAGE_SECRET_KEY: "c8aa7441f8e98ae2bf007302cef63b0bbca823c83a60c9e2c8ed9eaf9844e7d5"
 
+  sebs-501-graph-pagerank:
+    lang: python3-http-debian
+    handler: ./sebs-501-graph-pagerank
+    image: matheusschreiber/sebs-501-graph-pagerank:latest
+    limits:
+      memory: 128Mi
+    environment:
+      read_timeout: 30s
+      write_timeout: 30s
+      exec_timeout: 30s
+
+  sebs-502-graph-mst:
+    lang: python3-http-debian
+    handler: ./sebs-502-graph-mst
+    image: matheusschreiber/sebs-502-graph-mst:latest
+    limits:
+      memory: 128Mi
+    environment:
+      read_timeout: 30s
+      write_timeout: 30s
+      exec_timeout: 30s
+
+  sebs-503-graph-bfs:
+    lang: python3-http-debian
+    handler: ./sebs-503-graph-bfs
+    image: matheusschreiber/sebs-503-graph-bfs:latest
+    limits:
+      memory: 128Mi
+    environment:
+      read_timeout: 30s
+      write_timeout: 30s
+      exec_timeout: 30s
+
+  # sebs-504-dna-visualisation:
+  #   lang: python3-http-debian
+  #   handler: ./sebs-504-dna-visualisation
+  #   image: matheusschreiber/sebs-504-dna-visualisation:latest
+  #   limits:
+  #     memory: 128Mi
+  #   environment:
+  #     read_timeout: 30s
+  #     write_timeout: 30s
+  #     exec_timeout: 30s
+  #     MINIO_STORAGE_CONNECTION_URL: "10.31.112.98:9011"
+  #     MINIO_STORAGE_ACCESS_KEY: "2Oj9PRUQn00ToYEcInc3o6SID5OeyQblqFuH2nU-RH0"
+  #     MINIO_STORAGE_SECRET_KEY: "c8aa7441f8e98ae2bf007302cef63b0bbca823c83a60c9e2c8ed9eaf9844e7d5"

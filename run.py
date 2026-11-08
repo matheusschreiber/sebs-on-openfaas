@@ -14,19 +14,22 @@ import requests
 
 def invoke(url, payload, timeout):
     sent = time.time()
-    status, error, body = 0, None, {}
+    status, error, body, raw = 0, None, {}, ""
     try:
         r = requests.post(url, json=payload, timeout=timeout)
         status = r.status_code
+        raw = r.text
         try:
             body = r.json()
         except ValueError:
-            error = r.text[:200]
-        if not r.ok and error is None:
+            error = raw[:500]
+        if not r.ok and not error:          # was: `error is None`, which missed empty bodies
             error = "HTTP %d" % status
     except requests.RequestException as e:
-        error = str(e)[:200]
+        error = str(e)[:500]
     recv = time.time()
+    if not isinstance(body, dict):
+        body = {}
     result = body.get("result") if isinstance(body.get("result"), dict) else {}
     return {
         "client_send": sent, "client_recv": recv, "client_latency_s": recv - sent,
@@ -37,7 +40,22 @@ def invoke(url, payload, timeout):
         "request_id": body.get("request_id"),
         "measurement": result.get("measurement", {}),
         "_output": result,            # removed before writing unless --keep-output
+        "_raw": raw,                  # removed before writing
     }
+    
+def dump_logs(gateway, name, lines=100):
+    """Print the function's recent container logs (where the Python traceback lives)."""
+    print("\n===== faas-cli logs %s (last %d lines) =====" % (name, lines))
+    try:
+        p = subprocess.run(
+            ["faas-cli", "logs", name, "--gateway", gateway, "--follow=false", "--lines", str(lines)],
+            capture_output=True, text=True, timeout=30)
+        print(p.stdout.strip() or "(no stdout)")
+        if p.stderr.strip():
+            print("--- stderr ---\n" + p.stderr.strip())
+    except (subprocess.SubprocessError, OSError) as e:
+        print("could not fetch logs: %s" % e)
+    print("===== end logs =====\n")
 
 
 def force_cold(stack, gateway, name):
@@ -114,13 +132,17 @@ def main():
             for i, record in enumerate(records, start=1):
                 print("failed call %d: HTTP status %s; error: %s" % (
                     i, record["http_status"], record["error"] or "no error details"))
+                if record["_raw"]:
+                    print("raw response body: %s" % record["_raw"][:1000])
                 if record["_output"]:
                     print("response body:")
                     print(json.dumps(record["_output"], indent=2, default=str))
+            dump_logs(a.gateway, a.function)
 
     with open(a.out, "a") as f:
         for r in records:
             out = r.pop("_output")
+            r.pop("_raw")
             if a.keep_output:
                 r["output"] = out
             f.write(json.dumps(r, default=str) + "\n")
