@@ -14,17 +14,34 @@ functions:
       write_timeout: 30s
       exec_timeout: 30s
 
-  sebs-110-dynamic-html:
-    lang: python3-http-debian
+  sebs-110-dynamic-html-cpython:
+    lang: python3-http-flex
     handler: ./sebs-110-dynamic-html
-    image: matheusschreiber/sebs-110-dynamic-html:latest
-    limits:
-      memory: 128Mi
-    environment:
-      read_timeout: 30s
-      write_timeout: 30s
-      exec_timeout: 30s
-  
+    image: matheusschreiber/sebs-110-dynamic-html-cpython:latest
+    limits: { memory: 256Mi }
+    environment: { read_timeout: 60s, write_timeout: 60s, exec_timeout: 60s }
+
+  sebs-110-dynamic-html-pypy-jit:
+    lang: python3-http-flex
+    handler: ./sebs-110-dynamic-html
+    image: matheusschreiber/sebs-110-dynamic-html-pypy-jit:latest
+    build_args:
+      BASE_IMAGE: pypy:3.10-slim-bookworm
+      PYTHON_BIN: pypy3
+    limits: { memory: 256Mi }
+    environment: { read_timeout: 60s, write_timeout: 60s, exec_timeout: 60s }
+
+  sebs-110-dynamic-html-pypy-nojit:
+    lang: python3-http-flex
+    handler: ./sebs-110-dynamic-html
+    image: matheusschreiber/sebs-110-dynamic-html-pypy-nojit:latest
+    build_args:
+      BASE_IMAGE: pypy:3.10-slim-bookworm
+      PYTHON_BIN: pypy3
+      PYTHON_FLAGS: "--jit off"
+    limits: { memory: 256Mi }
+    environment: { read_timeout: 60s, write_timeout: 60s, exec_timeout: 60s }
+
   sebs-120-uploader:
     lang: python3-http-debian
     handler: ./sebs-120-uploader

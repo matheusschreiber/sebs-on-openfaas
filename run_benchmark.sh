@@ -90,7 +90,7 @@ set +a
 : "${VBOX_NETWORK_MODE:?Set VBOX_NETWORK_MODE in .env}"
 : "${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}"
 SEBS="$SEBS_DIR"
-OUTPUT_DIR=input-output/io-$BENCHMARK
+OUTPUT_DIR=input-output/io-$FUNCTION
 mkdir -p "$OUTPUT_DIR"
 
 if [[ "${VIRTUAL_ENV:-}" != "$SEBS/python-venv" ]]; then
@@ -190,7 +190,7 @@ fi
 
 if [[ "$validation_output" != *"validate_output: OK"* ]]; then
     printf 'ERROR: output validation failed for %s. Validation output:\n%s\n' \
-        "$BENCHMARK" "$validation_output" >&2
+        "$FUNCTION" "$validation_output" >&2
     exit 1
 fi
 
@@ -206,11 +206,33 @@ python3 run.py "${B[@]}" --mode burst -n 20  --input "$OUTPUT_DIR/input.json" --
 
 # PLOTING RESULTS
 
-python3 analyze.py "$OUTPUT_DIR/results.jsonl" --outdir "$OUTPUT_DIR/plots"
+# derive the python compiler label from the function image for the plot titles
+IMAGE_TAG="$DOCKERHUB_USERNAME/$FUNCTION:latest"
+PYTHON_VV="$(docker run --rm "$IMAGE_TAG" python3 -VV 2>/dev/null || true)"
+PYTHON_FPROCESS="$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$IMAGE_TAG" 2>/dev/null | grep '^fprocess=' || true)"
+PYTHON_COMPILER="$(PYTHON_VV="$PYTHON_VV" PYTHON_FPROCESS="$PYTHON_FPROCESS" python3 - <<'PY'
+import os, re
+
+vv = os.environ.get("PYTHON_VV", "")
+fprocess = os.environ.get("PYTHON_FPROCESS", "")
+pypy = re.search(r"PyPy \S+", vv)
+cpython = re.search(r"Python \S+", vv)
+if pypy:
+    label = pypy.group(0) + (" (%s)" % cpython.group(0) if cpython else "")
+elif cpython:
+    label = "C" + cpython.group(0)
+else:
+    label = ""
+if "--jit off" in fprocess:
+    label = (label + " [JIT off]").strip()
+print(label)
+PY
+)"
+
+python3 analyze.py "$OUTPUT_DIR/results.jsonl" --outdir "$OUTPUT_DIR/plots" --python-compiler "$PYTHON_COMPILER"
 
 # REGISTERING THE ENVIRONMENT
 
-IMAGE_TAG="$DOCKERHUB_USERNAME/$FUNCTION:latest"
 OUT=env.log
 case "$STORAGE" in
     none) STORAGE_DESCRIPTION="storage: none" ;;
@@ -231,6 +253,9 @@ esac
   echo "== setup"
   echo "VirtualBox network mode: $VBOX_NETWORK_MODE"
     echo "Template: python3-http-debian; image: $IMAGE_TAG; $STORAGE_DESCRIPTION"
+  echo "== python compiler (function image)"
+    docker run --rm "$IMAGE_TAG" python3 -VV 2>&1 \
+      || echo "WARN: could not query python version from $IMAGE_TAG"
   echo "== SeBS commit"; git -C "$SEBS" rev-parse HEAD
   echo "== faasd / containerd versions: run 'sudo faasd version' and 'sudo ctr version | head -5' on the VM and paste the output below"
 } > "$OUT"

@@ -149,9 +149,9 @@ def main():
         records.append(rec)
 
     if a.mode == "warm":
-        add(invoke(url, payload, a.timeout), idx=-1, warmup=True)
+        add(invoke_when_up(url, payload, a.timeout), idx=-1, warmup=True)
         for i in range(a.n):
-            add(invoke(url, payload, a.timeout), idx=i, warmup=False)
+            add(invoke_when_up(url, payload, a.timeout), idx=i, warmup=False)
     elif a.mode == "cold":
         for i in range(a.n):
             t0 = time.time()
@@ -164,7 +164,7 @@ def main():
     else:  # burst
         for rnd in range(a.rounds):
             with ThreadPoolExecutor(max_workers=a.n) as ex:
-                for i, rec in enumerate(ex.map(lambda _: invoke(url, payload, a.timeout), range(a.n))):
+                for i, rec in enumerate(ex.map(lambda _: invoke_when_up(url, payload, a.timeout), range(a.n))):
                     add(rec, idx=i, round=rnd, warmup=False)
 
     if a.input_module:   # validate the first successful output with the benchmark's own checker

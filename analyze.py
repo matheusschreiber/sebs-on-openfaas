@@ -10,6 +10,8 @@ import pandas as pd
 ap = argparse.ArgumentParser()
 ap.add_argument("results", nargs="+", help="one or more results.jsonl files")
 ap.add_argument("--outdir", default="plots")
+ap.add_argument("--python-compiler", default="",
+                help="label of the Python compiler used by the function, shown in plot titles")
 a = ap.parse_args()
 os.makedirs(a.outdir, exist_ok=True)
 
@@ -29,6 +31,8 @@ print("failed calls:", int(((df.http_status != 200) & (~df.warmup)).sum()), "of"
 groups = sorted(ok["group"].unique())
 benchmarks = sorted(ok["benchmark"].unique())
 benchmark_title = ", ".join(benchmarks)
+if a.python_compiler:
+    benchmark_title += " — " + a.python_compiler
 labels = {}
 for _, row in ok.drop_duplicates("group").iterrows():
     status = "cold" if row["is_cold"] else "warm"
