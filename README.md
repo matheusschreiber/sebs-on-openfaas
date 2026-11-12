@@ -44,7 +44,10 @@ they are not stored in object storage.
 - An OpenFaaS/faasd host reachable from the machine running `faas-cli` and
   `run.py`. Use a private cloud provider, or, if one is unavailable, install
   VirtualBox and start a VM with OpenFaaS/faasd configured. Ensure its gateway
-  and SSH access are reachable using the settings in `.env`.
+  and SSH access are reachable using the settings in `.env`, with proper
+  port-forwarding of ssh (2222 (host) -> 22 (VM)) and web (8080 (host) -> 8080 (VM)).
+  See [Setting up the OpenFaaS host](#setting-up-the-openfaas-host) for
+  installation and authentication steps.
 - `faas-cli`, Docker, and access to a container registry for building/pushing
   function images. Authenticate `faas-cli` with the gateway and Docker with the
   image registry before deployment.
@@ -56,6 +59,35 @@ they are not stored in object storage.
   `minio`; the SeBS environment may already provide some of them).
 - For benchmarks using input datasets, the relevant SeBS `benchmarks-data`
   files and any benchmark-specific dependencies.
+
+### Setting up the OpenFaaS host
+
+If the VM does not already have `faasd` installed, install it (free for
+non-commercial use):
+
+```bash
+git clone https://github.com/openfaas/faasd --depth=1
+cd faasd
+sudo systemctl stop containerd
+./hack/install.sh
+
+# check it worked with
+sudo systemctl status faasd
+```
+
+With `faasd` running on the VM and `faas-cli` installed on the host,
+authenticate `faas-cli` against the gateway. First read the generated
+password on the VM:
+
+```bash
+sudo cat /var/lib/faasd/secrets/basic-auth-password
+```
+
+Then log in from the host:
+
+```bash
+faas-cli login --password <password>
+```
 
 SeBS storage runs in Docker on the machine where the SeBS CLI is run. Functions
 on a separate VM/container network must be able to reach the storage's
