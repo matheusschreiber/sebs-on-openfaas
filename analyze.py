@@ -79,10 +79,12 @@ if meas:   # benchmarks with storage report download/compute/upload split (micro
     parts["gateway+network"] = "overhead_s"
 means = ok.groupby("group")[list(parts.values())].mean() * 1000
 means.columns = list(parts.keys())
-ax = means.plot(kind="bar", stacked=True, figsize=(1.6 * len(groups) + 3, 4))
+ax = means.plot(kind="bar", stacked=True, figsize=(1.6 * len(groups) + 6, 4))
 ax.set_xticklabels([labels[g] for g in means.index], rotation=0)
 ax.set_xlabel("")
 ax.set_ylabel("mean time [ms]")
+ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5), fontsize=8, frameon=False)
 describe_plot(ax.figure, ax, "Mean client latency breakdown")
-ax.figure.savefig(os.path.join(a.outdir, "time_breakdown.png"), dpi=150); plt.close(ax.figure)
+ax.figure.savefig(os.path.join(a.outdir, "time_breakdown.png"), dpi=150, bbox_inches="tight")
+plt.close(ax.figure)
 print("plots written to", a.outdir)

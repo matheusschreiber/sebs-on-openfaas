@@ -8,8 +8,8 @@ Modes (loosely modelled on the SeBS perf-cost experiment):
 """
 import argparse, importlib.util, json, subprocess, time, uuid
 from concurrent.futures import ThreadPoolExecutor
-
 import requests
+import shlex
 
 
 def invoke(url, payload, timeout):
@@ -43,20 +43,50 @@ def invoke(url, payload, timeout):
         "_raw": raw,                  # removed before writing
     }
     
-def dump_logs(gateway, name, lines=100):
-    """Print the function's recent container logs (where the Python traceback lives)."""
-    print("\n===== faas-cli logs %s (last %d lines) =====" % (name, lines))
+def run_capture(cmd, timeout=30):
+    """Run cmd and return (stdout, stderr), keeping partial output if it times out."""
+    def dec(b):
+        return b.decode(errors="replace") if isinstance(b, bytes) else (b or "")
     try:
-        p = subprocess.run(
-            ["faas-cli", "logs", name, "--gateway", gateway, "--follow=false", "--lines", str(lines)],
-            capture_output=True, text=True, timeout=30)
-        print(p.stdout.strip() or "(no stdout)")
-        if p.stderr.strip():
-            print("--- stderr ---\n" + p.stderr.strip())
-    except (subprocess.SubprocessError, OSError) as e:
-        print("could not fetch logs: %s" % e)
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        return p.stdout, p.stderr
+    except subprocess.TimeoutExpired as e:
+        return dec(e.stdout), dec(e.stderr) + "\n(timed out after %ds, output above is partial)" % timeout
+    except OSError as e:
+        return "", "could not run %s: %s" % (cmd[0], e)
+
+
+def dump_logs(gateway, name, lines=100):
+    """Print the function's recent container logs via faas-cli (best effort)."""
+    print("\n===== faas-cli logs %s (last %d lines) =====" % (name, lines))
+    out, err = run_capture(["faas-cli", "logs", name, "--gateway", gateway, "--lines", str(lines)])
+    print(out.strip() or "(no stdout)")
+    if err.strip():
+        print("--- stderr ---\n" + err.strip())
     print("===== end logs =====\n")
 
+
+def dump_vm_diagnostics(ssh, name):
+    """Run the faasd-side diagnostics inside the VM over SSH."""
+    if not ssh:
+        print("(no --vm-ssh given, skipping VM diagnostics)")
+        return
+    q = shlex.quote(name)
+    cmds = [
+        "sudo journalctl -t openfaas-fn:%s -n 100 --no-pager" % q,
+        "sudo journalctl -u faasd-provider -n 50 --no-pager",
+        "sudo ctr -n openfaas-fn task ls",
+        "sudo dmesg | grep -i -E 'oom|killed process' | tail -20",
+        "free -h",
+    ]
+    ssh_cmd = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10"] + shlex.split(ssh)
+    for c in cmds:
+        print("\n===== VM: %s =====" % c)
+        out, err = run_capture(ssh_cmd + [c])
+        print(out.strip() or "(no output)")
+        if err.strip():
+            print("--- stderr ---\n" + err.strip())
+    print("\n===== end VM diagnostics =====\n")
 
 def force_cold(stack, gateway, name):
     """Re-deploy with a changed env var so faasd replaces the container (SeBS does the same trick)."""
@@ -75,6 +105,20 @@ def wait_ready(stack, gateway, name, timeout=90):
         time.sleep(0.5)
     raise RuntimeError("function did not become ready")
 
+def invoke_when_up(url, payload, timeout, max_wait=180):
+    """Like invoke(), but if the function's HTTP server isn't listening yet
+    (the watchdog answers with an empty 5xx), wait and retry."""
+    deadline = time.time() + max_wait
+    retries = 0
+    while True:
+        rec = invoke(url, payload, timeout)
+        not_up = rec["http_status"] in (500, 502, 503) and not rec["_raw"]
+        if not not_up or time.time() > deadline:
+            rec["startup_retries"] = retries
+            return rec
+        retries += 1
+        time.sleep(0.5)
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -92,6 +136,7 @@ def main():
     ap.add_argument("--keep-output", action="store_true", help="store the function output in the log")
     ap.add_argument("--input-module", help="path to the benchmark's input.py to validate the first output")
     ap.add_argument("--data-dir", default=None)
+    ap.add_argument("--vm-ssh", default=None, help='how to reach the faasd VM, e.g. "ubuntu@192.168.64.5" or "-p 2222 user@127.0.0.1"')
     a = ap.parse_args()
 
     payload = json.load(open(a.input))
@@ -113,7 +158,7 @@ def main():
             force_cold(a.stack, a.gateway, a.function)
             wait_ready(a.stack, a.gateway, a.function)
             time.sleep(a.settle)
-            rec = invoke(url, payload, a.timeout)
+            rec = invoke_when_up(url, payload, a.timeout)
             rec["cold_total_s"] = rec["client_recv"] - t0       # deploy + ready + settle + first call
             add(rec, idx=i, warmup=False)
     else:  # burst
@@ -138,6 +183,7 @@ def main():
                     print("response body:")
                     print(json.dumps(record["_output"], indent=2, default=str))
             dump_logs(a.gateway, a.function)
+            dump_vm_diagnostics(a.vm_ssh, a.function)
 
     with open(a.out, "a") as f:
         for r in records:

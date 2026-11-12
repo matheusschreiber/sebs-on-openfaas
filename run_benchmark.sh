@@ -20,6 +20,7 @@ FUNCTION=""
 BENCHMARK=""
 BENCHMARK_DIR=""
 STORAGE=""
+VM_SSH=""
 
 while (($#)); do
     case "$1" in
@@ -148,7 +149,6 @@ esac
 # manual check
 # python3 run.py --gateway http://127.0.0.1:8080 --function sebs-411-image-recognition --benchmark 411-image-recognition --mode cold -n 1 --input input-output/io-411-image-recognition/input.json --out input-output/io-411-image-recognition/results.jsonl --input-module ../serverless-benchmarks/benchmarks/400.inference/411.image-recognition/input.py
 
-
 INPUT_ARGS=(--size test)
 case "$STORAGE" in
     object)
@@ -169,7 +169,8 @@ mv input.json "$OUTPUT_DIR/input.json"
 
 # VALIDATING NEW INPUT 
 
-B=(--gateway "$GATEWAY_URL" --function "$FUNCTION" --benchmark "$BENCHMARK")
+printf -v VM_SSH -- '-p %q -i %q %q' "$SSH_PORT" "$SSH_KEY_FILE" "$SSH_TARGET"
+B=(--gateway "$GATEWAY_URL" --function "$FUNCTION" --benchmark "$BENCHMARK" --vm-ssh "$VM_SSH")
 VALIDATION_RESULTS="$OUTPUT_DIR/validation-results.jsonl"
 rm -f "$VALIDATION_RESULTS"
 trap 'rm -f "$VALIDATION_RESULTS"' EXIT
@@ -209,7 +210,7 @@ python3 analyze.py "$OUTPUT_DIR/results.jsonl" --outdir "$OUTPUT_DIR/plots"
 
 # REGISTERING THE ENVIRONMENT
 
-IMAGE_TAG="$DOCKERHUB_USERNAME/sebs-$FUNCTION:latest"
+IMAGE_TAG="$DOCKERHUB_USERNAME/$FUNCTION:latest"
 OUT=env.log
 case "$STORAGE" in
     none) STORAGE_DESCRIPTION="storage: none" ;;

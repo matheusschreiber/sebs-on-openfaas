@@ -1,0 +1,12 @@
+{
+  "object": {
+    "model": "resnet50-19c8e357.pth",
+    "input": "800px-Porsche_991_silver_IAA.jpg",
+    "size": "test"
+  },
+  "bucket": {
+    "bucket": "sebs-benchmarks",
+    "input": "411.image-recognition-1-input",
+    "model": "411.image-recognition-0-input"
+  }
+}
