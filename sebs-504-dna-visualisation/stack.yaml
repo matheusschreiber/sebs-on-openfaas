@@ -1,0 +1,51 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: "http://127.0.0.1:8080"
+functions:
+
+  sebs-504-dna-visualisation-cpython:
+    lang: python3-http-flex
+    handler: ./sebs-504-dna-visualisation
+    image: matheusschreiber/sebs-504-dna-visualisation-cpython:latest
+    limits: { memory: 256Mi }
+    environment:
+      read_timeout: 60s
+      write_timeout: 60s
+      exec_timeout: 60s
+      MINIO_STORAGE_CONNECTION_URL: "192.168.0.100:9011"
+      MINIO_STORAGE_ACCESS_KEY: "_WJ9PpAjFvGfDeR92V-gr9kMuogOzmxbn-hwXrgfe-Y"
+      MINIO_STORAGE_SECRET_KEY: "0cf7bf387e088bb2c524c25311496aab8cb5e6944c0699d43d456904ca95a21e"
+
+  sebs-504-dna-visualisation-pypy-jit:
+    lang: python3-http-flex
+    handler: ./sebs-504-dna-visualisation
+    image: matheusschreiber/sebs-504-dna-visualisation-pypy:latest
+    build_args:
+      BASE_IMAGE: pypy:3.10-slim-bookworm
+      PYTHON_BIN: pypy3
+    limits: { memory: 256Mi }
+    environment:
+      read_timeout: 60s
+      write_timeout: 60s
+      exec_timeout: 60s
+      MINIO_STORAGE_CONNECTION_URL: "192.168.0.100:9011"
+      MINIO_STORAGE_ACCESS_KEY: "_WJ9PpAjFvGfDeR92V-gr9kMuogOzmxbn-hwXrgfe-Y"
+      MINIO_STORAGE_SECRET_KEY: "0cf7bf387e088bb2c524c25311496aab8cb5e6944c0699d43d456904ca95a21e"
+
+  sebs-504-dna-visualisation-pypy-nojit:
+    lang: python3-http-flex
+    handler: ./sebs-504-dna-visualisation
+    image: matheusschreiber/sebs-504-dna-visualisation-pypy:latest
+    build_args:
+      BASE_IMAGE: pypy:3.10-slim-bookworm
+      PYTHON_BIN: pypy3
+      PYTHON_FLAGS: "--jit off"
+    limits: { memory: 256Mi }
+    environment:
+      read_timeout: 60s
+      write_timeout: 60s
+      exec_timeout: 60s
+      MINIO_STORAGE_CONNECTION_URL: "192.168.0.100:9011"
+      MINIO_STORAGE_ACCESS_KEY: "_WJ9PpAjFvGfDeR92V-gr9kMuogOzmxbn-hwXrgfe-Y"
+      MINIO_STORAGE_SECRET_KEY: "0cf7bf387e088bb2c524c25311496aab8cb5e6944c0699d43d456904ca95a21e"

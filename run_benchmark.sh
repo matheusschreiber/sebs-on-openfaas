@@ -99,6 +99,7 @@ fi
 
 # LOAD STORAGE SETTINGS AND ENV VARIABLES
 
+STACK_FILE="$SCRIPT_DIR/sebs-${BENCHMARK//./-}/stack.yaml"
 STORAGE_CONFIG="$SEBS/storage.json"
 ACCESS_KEY=""
 SECRET_KEY=""
@@ -147,7 +148,7 @@ esac
 # RUNNING INPUT VALIDATION
 
 # manual check
-# python3 run.py --gateway http://127.0.0.1:8080 --function sebs-411-image-recognition --benchmark 411-image-recognition --mode cold -n 1 --input input-output/io-411-image-recognition/input.json --out input-output/io-411-image-recognition/results.jsonl --input-module ../serverless-benchmarks/benchmarks/400.inference/411.image-recognition/input.py
+# python3 run.py --gateway http://127.0.0.1:8080 --function sebs-411-image-recognition --benchmark 411-image-recognition --mode cold -n 1 --input input-output/io-411-image-recognition/input.json --out input-output/io-411-image-recognition/results.jsonl --input-module ../serverless-benchmarks/benchmarks/400.inference/411.image-recognition/input.py --stack sebs-411-image-recognition/stack.yaml
 
 INPUT_ARGS=(--size test)
 case "$STORAGE" in
@@ -176,6 +177,7 @@ rm -f "$VALIDATION_RESULTS"
 trap 'rm -f "$VALIDATION_RESULTS"' EXIT
 
 if validation_output=$(python3 run.py "${B[@]}" --mode warm -n 3 \
+    --stack "$STACK_FILE" \
     --input "$OUTPUT_DIR/input.json" \
     --data-dir "$SEBS/benchmarks-data/$BENCHMARK_DIR" \
     --input-module "$SEBS/benchmarks/$BENCHMARK_DIR/input.py" \
@@ -200,9 +202,9 @@ trap - EXIT
 # RUNNING BENCHMARK MULTIPLE TIMES
 
 rm -f "$OUTPUT_DIR/results.jsonl" && touch "$OUTPUT_DIR/results.jsonl"
-python3 run.py "${B[@]}" --mode warm  -n 200 --input "$OUTPUT_DIR/input.json" --out "$OUTPUT_DIR/results.jsonl"
-python3 run.py "${B[@]}" --mode cold  -n 50  --input "$OUTPUT_DIR/input.json" --out "$OUTPUT_DIR/results.jsonl"
-python3 run.py "${B[@]}" --mode burst -n 20  --input "$OUTPUT_DIR/input.json" --rounds 10 --out "$OUTPUT_DIR/results.jsonl"
+python3 run.py "${B[@]}" --mode warm  -n 200 --stack "$STACK_FILE" --input "$OUTPUT_DIR/input.json" --out "$OUTPUT_DIR/results.jsonl"
+python3 run.py "${B[@]}" --mode cold  -n 50  --stack "$STACK_FILE" --input "$OUTPUT_DIR/input.json" --out "$OUTPUT_DIR/results.jsonl"
+python3 run.py "${B[@]}" --mode burst -n 20  --stack "$STACK_FILE" --input "$OUTPUT_DIR/input.json" --rounds 10 --out "$OUTPUT_DIR/results.jsonl"
 
 # PLOTING RESULTS
 

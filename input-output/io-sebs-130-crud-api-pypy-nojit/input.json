@@ -1,0 +1,14 @@
+{
+  "requests": [
+    {
+      "route": "GET /cart/{id}",
+      "path": {
+        "id": "game-gothic"
+      },
+      "body": {
+        "cart": "dc06b6baa6fb4d9da7c3d25f9e2b32f5"
+      }
+    }
+  ],
+  "size": "test"
+}

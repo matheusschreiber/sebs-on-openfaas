@@ -1,0 +1,6 @@
+,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s
+,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max
+group,,,,,,,,,,,,,,,,,,,,,,,,
+503.graph-bfs burst warm,200.0,0.0558,0.0162,0.0254,0.0532,0.0892,0.0977,0.108,200.0,0.0051,0.0066,0.0002,0.0029,0.0175,0.0328,0.0393,200.0,0.0507,0.0146,0.0233,0.0483,0.0769,0.0935,0.0971
+503.graph-bfs cold cold,50.0,0.0418,0.0112,0.018,0.0402,0.0596,0.0683,0.0728,50.0,0.0006,0.0003,0.0002,0.0005,0.0012,0.0014,0.0016,50.0,0.0412,0.0111,0.0177,0.0393,0.059,0.0675,0.0715
+503.graph-bfs warm warm,200.0,0.0138,0.004,0.008,0.0131,0.0192,0.0315,0.0421,200.0,0.0003,0.0001,0.0002,0.0003,0.0004,0.0006,0.0009,200.0,0.0135,0.004,0.0079,0.0128,0.0189,0.0312,0.0413

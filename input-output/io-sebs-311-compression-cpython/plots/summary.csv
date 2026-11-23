@@ -1,0 +1,6 @@
+,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s
+,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max
+group,,,,,,,,,,,,,,,,,,,,,,,,
+311.compression burst warm,200.0,5.7604,2.9408,0.9466,5.5009,11.0085,11.5879,11.7668,200.0,1.9065,0.9019,0.7549,1.3723,3.1788,3.4193,3.4892,200.0,3.8538,2.84,0.0181,3.9075,8.173,8.6724,10.991
+311.compression cold cold,50.0,0.8188,0.1084,0.6127,0.7992,0.9863,1.0147,1.0252,50.0,0.7812,0.1036,0.592,0.7743,0.949,0.9673,0.9779,50.0,0.0375,0.0097,0.0197,0.0377,0.054,0.0585,0.0587
+311.compression warm warm,199.0,1.5167,1.3338,0.5,0.7739,3.0945,6.4955,10.4671,199.0,1.4951,1.3329,0.4809,0.7521,3.0759,6.4701,10.442,199.0,0.0216,0.0062,0.0117,0.0209,0.0313,0.0408,0.0566

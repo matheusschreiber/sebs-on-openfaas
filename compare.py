@@ -96,15 +96,63 @@ fig.text(
 fig.tight_layout(rect=(0, 0.12, 1, 0.9))
 fig.savefig(os.path.join(a.outdir, "latency_ecdf.png"), dpi=150); plt.close(fig)
 
-# 4. mean time breakdown (function vs gateway+network) per variant and mode
-means = ok.groupby(["mode", "variant"])[["function_time_s", "overhead_s"]].mean() * 1000
-means = means.reindex(pd.MultiIndex.from_product([modes, variants], names=["mode", "variant"]))
-means.columns = ["function (total)", "gateway+network"]
-ax = means.plot(kind="bar", stacked=True, figsize=(1.2 * len(means) + 4, 4))
-ax.set_xticklabels(["%s\n%s" % (m, v) for m, v in means.index], rotation=0, fontsize=8)
-ax.set_xlabel(""); ax.set_ylabel("mean time [ms]")
-ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5), fontsize=8, frameon=False)
-describe_plot(ax.figure, ax, "Mean client latency breakdown comparison")
-ax.figure.savefig(os.path.join(a.outdir, "time_breakdown.png"), dpi=150, bbox_inches="tight")
-plt.close(ax.figure)
+# 4. Mean time breakdown (function vs gateway+network)
+means = (ok.groupby(["mode", "variant"])[["function_time_s", "overhead_s"]]
+         .mean().mul(1000)
+         .reindex(pd.MultiIndex.from_product([modes, variants])))
+
+bar_width, compiler_gap, mode_gap = 0.65, 0.20, 1.8
+function_color, overhead_color = "#4C78A8", "#F2A541"
+
+fig, ax = plt.subplots(figsize=(max(9, len(modes) * 4.5), 5))
+x, centers = [], []
+pos = 0
+
+for mode in modes:
+    start = pos
+    for variant in variants:
+        function, overhead = means.loc[(mode, variant)]
+        x.append(pos)
+        ax.bar(pos, function, bar_width, color=function_color, edgecolor="black", linewidth=.6)
+        ax.bar(pos, overhead, bar_width, bottom=function, color=overhead_color,
+               edgecolor="black", linewidth=.6)
+        pos += bar_width + compiler_gap
+    centers.append((start + pos - bar_width - compiler_gap) / 2)
+    pos += mode_gap
+
+ax.set_xticks(x)
+label_map = {
+    "CPython": "CPython",
+    "PyPy (JIT)": "JIT",
+    "PyPy (no JIT)": "no-JIT",
+}
+
+ax.set_xticklabels(
+    [label_map[v] for v in variants] * len(modes),
+    fontsize=9
+)
+
+for i, (mode, center) in enumerate(zip(modes, centers)):
+    ax.text(center, 1.02, mode.upper(), transform=ax.get_xaxis_transform(),
+            ha="center", fontweight="bold", fontsize=11)
+    if i < len(modes) - 1:
+        ax.axvline((x[(i+1)*len(variants)-1] + x[(i+1)*len(variants)]) / 2,
+                   color="gray", linestyle="--", alpha=.5)
+
+ax.set_ylabel("Mean time [ms]")
+ax.set_xlabel("Compiler")
+ax.set_title("Mean client latency breakdown comparison\n" + benchmark_title, pad=30)
+ax.grid(axis="y", linestyle=":", alpha=.4)
+ax.set_axisbelow(True)
+ax.legend(handles=[
+    mpatches.Patch(color=function_color, label="Function execution"),
+    mpatches.Patch(color=overhead_color, label="Gateway + network"),
+], loc="center left", bbox_to_anchor=(1.02, .5), frameon=False, fontsize=9)
+
+fig.text(.5, .02, "Warm = sequential after warm-up; cold = redeploy before each call; burst = concurrent batches.",
+         ha="center", fontsize=8)
+fig.tight_layout(rect=(0, .08, .88, .88))
+fig.savefig(os.path.join(a.outdir, "time_breakdown.png"), dpi=150, bbox_inches="tight")
+plt.close(fig)
+
 print("comparison plots written to", a.outdir)

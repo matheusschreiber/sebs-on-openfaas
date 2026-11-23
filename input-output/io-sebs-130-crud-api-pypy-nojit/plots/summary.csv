@@ -1,0 +1,6 @@
+,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s
+,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max
+group,,,,,,,,,,,,,,,,,,,,,,,,
+130.crud-api burst warm,200.0,0.1786,0.0774,0.0372,0.1657,0.3212,0.3904,0.4042,200.0,0.0309,0.0197,0.006,0.0271,0.053,0.0942,0.1794,200.0,0.1477,0.0745,0.0203,0.1412,0.2746,0.3685,0.3924
+130.crud-api cold cold,50.0,0.1303,0.1583,0.0369,0.0592,0.3981,0.718,0.8823,50.0,0.0553,0.0782,0.0119,0.023,0.1841,0.3555,0.3688,50.0,0.0749,0.1169,0.0186,0.0362,0.2994,0.5407,0.7162
+130.crud-api warm warm,200.0,0.0448,0.0179,0.0231,0.0406,0.0783,0.1305,0.1683,200.0,0.0108,0.0051,0.0039,0.0103,0.0179,0.0332,0.0441,200.0,0.034,0.0165,0.019,0.0298,0.0617,0.1222,0.162

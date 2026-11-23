@@ -2,7 +2,6 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-STACK_FILE="$SCRIPT_DIR/stack.yaml"
 ENV_FILE="$SCRIPT_DIR/.env"
 if [[ ! -f "$ENV_FILE" ]]; then
     printf 'ERROR: %s is missing. Copy .env.example to .env and configure it.\n' "$ENV_FILE" >&2
@@ -20,11 +19,6 @@ SEBS="$SEBS_DIR"
 if ! command -v faas-cli >/dev/null 2>&1; then
 	printf 'ERROR: faas-cli is not installed or not on PATH.\n' >&2
 	exit 127
-fi
-
-if [[ ! -f "$STACK_FILE" ]]; then
-	printf 'ERROR: OpenFaaS stack file not found: %s\n' "$STACK_FILE" >&2
-	exit 1
 fi
 
 # CHECKING STORAGE SERVICES
@@ -62,18 +56,22 @@ print(c["access_key"], c["secret_key"], c.get("external_address") or c["address"
 PY
 )
 
-# UPDATING stack.yml WITH STORAGE CREDENTIALS
+# UPDATING ALL THE stack.yaml FILES WITH STORAGE CREDENTIALS
 
 cd "$SCRIPT_DIR"
 
-sed -i -E \
-    -e "s|^([[:space:]]*gateway:[[:space:]]*).*|\1\"$GATEWAY_URL\"|" \
-    -e "s|^([[:space:]]*MINIO_STORAGE_ACCESS_KEY:[[:space:]]*).*|\1\"$ACCESS_KEY\"|" \
-    -e "s|^([[:space:]]*MINIO_STORAGE_SECRET_KEY:[[:space:]]*).*|\1\"$SECRET_KEY\"|" \
-    -e "s|^([[:space:]]*MINIO_STORAGE_CONNECTION_URL:[[:space:]]*).*|\1\"$STORAGE_ADDR\"|" \
-    -e "s|^([[:space:]]*NOSQL_STORAGE_ENDPOINT:[[:space:]]*).*|\1\"$NOSQL_ADDR\"|" \
-    "$STACK_FILE"
+# find "$SCRIPT_DIR" -type f -name "stack.yaml" | while IFS= read -r STACK_FILE; do
+find "$SCRIPT_DIR" -mindepth 1 \( -name build -o -name template \) -prune -o \
+     -type f -name "stack.yaml" -print | while IFS= read -r STACK_FILE; do
 
-# CHECKING OPENFAAS FUNCTION UPLOADED
+    echo "Updating: $STACK_FILE"
 
-faas-cli up -f "$STACK_FILE"
+    sed -i -E \
+        -e "s|^([[:space:]]*gateway:[[:space:]]*).*|\1\"$GATEWAY_URL\"|" \
+        -e "s|^([[:space:]]*MINIO_STORAGE_ACCESS_KEY:[[:space:]]*).*|\1\"$ACCESS_KEY\"|" \
+        -e "s|^([[:space:]]*MINIO_STORAGE_SECRET_KEY:[[:space:]]*).*|\1\"$SECRET_KEY\"|" \
+        -e "s|^([[:space:]]*MINIO_STORAGE_CONNECTION_URL:[[:space:]]*).*|\1\"$STORAGE_ADDR\"|" \
+        -e "s|^([[:space:]]*NOSQL_STORAGE_ENDPOINT:[[:space:]]*).*|\1\"$NOSQL_ADDR\"|" \
+        "$STACK_FILE"
+
+done

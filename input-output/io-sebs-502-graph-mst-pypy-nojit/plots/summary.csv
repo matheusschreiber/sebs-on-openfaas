@@ -1,0 +1,6 @@
+,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s
+,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max
+group,,,,,,,,,,,,,,,,,,,,,,,,
+502.graph-mst burst warm,200.0,0.0744,0.0241,0.0252,0.0737,0.1138,0.1278,0.1347,200.0,0.0046,0.0043,0.0003,0.0034,0.0124,0.018,0.0234,200.0,0.0698,0.0233,0.0194,0.0704,0.1082,0.1182,0.131
+502.graph-mst cold cold,50.0,0.0373,0.0186,0.0187,0.0348,0.0424,0.1161,0.1532,50.0,0.0029,0.0008,0.0013,0.0027,0.0042,0.0049,0.0049,50.0,0.0344,0.0184,0.017,0.0319,0.0384,0.1128,0.1498
+502.graph-mst warm warm,200.0,0.0145,0.0144,0.01,0.0127,0.0173,0.0482,0.2052,200.0,0.0009,0.0006,0.0004,0.0006,0.0017,0.0036,0.0046,200.0,0.0137,0.0142,0.0095,0.0118,0.0162,0.0468,0.2018
