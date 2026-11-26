@@ -15,15 +15,15 @@ functions:
       write_timeout: 60s
       exec_timeout: 60s
       MINIO_STORAGE_CONNECTION_URL: "192.168.0.100:9011"
-      MINIO_STORAGE_ACCESS_KEY: "_WJ9PpAjFvGfDeR92V-gr9kMuogOzmxbn-hwXrgfe-Y"
-      MINIO_STORAGE_SECRET_KEY: "0cf7bf387e088bb2c524c25311496aab8cb5e6944c0699d43d456904ca95a21e"
+      MINIO_STORAGE_ACCESS_KEY: "f4onfl-avKD2y-_haxzsKv-RX_HoZbv8O7HTlT35OMw"
+      MINIO_STORAGE_SECRET_KEY: "d0d65425a1a8b5481c7055ca523680a9cec29352a311219807a8dd6d5bf8cc11"
 
   sebs-120-uploader-pypy-jit:
     lang: python3-http-flex
     handler: ./sebs-120-uploader
     image: matheusschreiber/sebs-120-uploader-pypy:latest
     build_args:
-      BASE_IMAGE: pypy:3.10-slim-bookworm
+      BASE_IMAGE: pypy:3.12-slim-bookworm
       PYTHON_BIN: pypy3
     limits:
       memory: 256Mi
@@ -32,15 +32,15 @@ functions:
       write_timeout: 60s
       exec_timeout: 60s
       MINIO_STORAGE_CONNECTION_URL: "192.168.0.100:9011"
-      MINIO_STORAGE_ACCESS_KEY: "_WJ9PpAjFvGfDeR92V-gr9kMuogOzmxbn-hwXrgfe-Y"
-      MINIO_STORAGE_SECRET_KEY: "0cf7bf387e088bb2c524c25311496aab8cb5e6944c0699d43d456904ca95a21e"
+      MINIO_STORAGE_ACCESS_KEY: "f4onfl-avKD2y-_haxzsKv-RX_HoZbv8O7HTlT35OMw"
+      MINIO_STORAGE_SECRET_KEY: "d0d65425a1a8b5481c7055ca523680a9cec29352a311219807a8dd6d5bf8cc11"
 
   sebs-120-uploader-pypy-nojit:
     lang: python3-http-flex
     handler: ./sebs-120-uploader
     image: matheusschreiber/sebs-120-uploader-pypy:latest
     build_args:
-      BASE_IMAGE: pypy:3.10-slim-bookworm
+      BASE_IMAGE: pypy:3.12-slim-bookworm
       PYTHON_BIN: pypy3
       PYTHON_FLAGS: "--jit off"
     limits:
@@ -50,5 +50,5 @@ functions:
       write_timeout: 60s
       exec_timeout: 60s
       MINIO_STORAGE_CONNECTION_URL: "192.168.0.100:9011"
-      MINIO_STORAGE_ACCESS_KEY: "_WJ9PpAjFvGfDeR92V-gr9kMuogOzmxbn-hwXrgfe-Y"
-      MINIO_STORAGE_SECRET_KEY: "0cf7bf387e088bb2c524c25311496aab8cb5e6944c0699d43d456904ca95a21e"
+      MINIO_STORAGE_ACCESS_KEY: "f4onfl-avKD2y-_haxzsKv-RX_HoZbv8O7HTlT35OMw"
+      MINIO_STORAGE_SECRET_KEY: "d0d65425a1a8b5481c7055ca523680a9cec29352a311219807a8dd6d5bf8cc11"
