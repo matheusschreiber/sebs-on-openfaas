@@ -1,0 +1,6 @@
+,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,client_latency_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,function_time_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s,overhead_s
+,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max,count,mean,std,min,50%,95%,99%,max
+group,,,,,,,,,,,,,,,,,,,,,,,,
+110.dynamic-html burst warm,4000.0,1.3595,0.7395,0.0482,1.3372,2.6257,2.9576,3.1279,4000.0,0.0073,0.0115,0.0009,0.0035,0.0239,0.0492,0.2027,4000.0,1.3522,0.7402,0.0392,1.3281,2.6218,2.9502,3.1255
+110.dynamic-html cold cold,100.0,0.0419,0.0108,0.0284,0.0402,0.0508,0.0897,0.1188,100.0,0.0101,0.0023,0.0061,0.01,0.0145,0.0153,0.0176,100.0,0.0317,0.01,0.02,0.0304,0.0389,0.0804,0.1045
+110.dynamic-html warm warm,1000.0,0.0184,0.0092,0.0106,0.0168,0.0274,0.0503,0.1327,1000.0,0.0036,0.0027,0.0014,0.0028,0.0084,0.0164,0.027,1000.0,0.0148,0.0082,0.009,0.0134,0.0203,0.0396,0.1264
