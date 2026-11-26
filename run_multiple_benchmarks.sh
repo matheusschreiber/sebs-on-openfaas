@@ -62,6 +62,14 @@ case "$1" in
             "none"
         ;;
 
+    jit-kernel)
+        run_comparison \
+            "090-jit-kernel" \
+            "090.jit-kernel" \
+            "000.microbenchmarks/090.jit-kernel" \
+            "object"
+        ;;
+
     dynamic-html)
         run_comparison \
             "110-dynamic-html" \

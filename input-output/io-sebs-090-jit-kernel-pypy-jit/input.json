@@ -1,0 +1,5 @@
+{
+  "iterations": 10000,
+  "seed": 12345,
+  "expected_checksum": 2999958848
+}
